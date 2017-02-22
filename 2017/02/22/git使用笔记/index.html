@@ -90,13 +90,13 @@
 <meta property="og:url" content="http://yoursite.com/2017/02/22/git使用笔记/index.html">
 <meta property="og:site_name" content="yufeng's Blog">
 <meta property="og:description" content="git是一种分布式版本控制工具，可以使用命令行和客户端操作两种方式。">
-<meta property="og:image" content="http://yoursite.com/git使用笔记/git工作流.png">
-<meta property="og:image" content="http://yoursite.com/git使用笔记/git分支图.png">
-<meta property="og:updated_time" content="2017-02-22T15:08:07.000Z">
+<meta property="og:image" content="http://yoursite.com/git工作流.png">
+<meta property="og:image" content="http://yoursite.com/git分支图.png">
+<meta property="og:updated_time" content="2017-02-22T15:11:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="git使用笔记">
 <meta name="twitter:description" content="git是一种分布式版本控制工具，可以使用命令行和客户端操作两种方式。">
-<meta name="twitter:image" content="http://yoursite.com/git使用笔记/git工作流.png">
+<meta name="twitter:image" content="http://yoursite.com/git工作流.png">
 
 
 
@@ -346,7 +346,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone /path/to/repository</div></pre></td></tr></table></figure>
 <p>如果是远端服务器上的仓库，你的命令会是这个样子：  </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone username@host:/path/to/repository</div></pre></td></tr></table></figure>
-<p>（3）工作流<br>你的本地仓库由 git 维护的三棵“树”组成。第一个是你的 工作目录，它持有实际文件；第二个是 缓存区（Index），它像个缓存区域，临时保存你的改动；最后是 HEAD，指向你最近一次提交后的结果。<br><img src="git使用笔记/git工作流.png" alt=""><br>（4）添加与提交<br>你可以计划改动（把它们添加到缓存区），使用如下命令：</p>
+<p>（3）工作流<br>你的本地仓库由 git 维护的三棵“树”组成。第一个是你的 工作目录，它持有实际文件；第二个是 缓存区（Index），它像个缓存区域，临时保存你的改动；最后是 HEAD，指向你最近一次提交后的结果。<br><img src="git工作流.png" alt=""><br>（4）添加与提交<br>你可以计划改动（把它们添加到缓存区），使用如下命令：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git add &lt;filename&gt;</div><div class="line">git add *</div></pre></td></tr></table></figure>
 <p>这是 git 基本工作流程的第一步；使用如下命令以实际提交改动：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git commit -m &quot;代码提交信息&quot;</div></pre></td></tr></table></figure>
@@ -354,7 +354,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git push origin master</div></pre></td></tr></table></figure>
 <p>可以把 master 换成你想要推送的任何分支。<br>如果你还没有克隆现有仓库，并欲将你的仓库连接到某个远程服务器，你可以使用如下命令添加：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git remote add origin &lt;server&gt;</div></pre></td></tr></table></figure>
-<p>如此你就能够将你的改动推送到所添加的服务器上去了。<br>（6）分支<br>分支是用来将功能开发绝缘开来的。在你创建仓库的时候，master 是“默认的”。在其他分支上进行开发，完成后再将它们合并到主分支上，这在多人协同开发时显得尤为有用。<br><img src="git使用笔记/git分支图.png" alt=""><br>创建一个叫做“feature_x”的分支，并切换过去：  </p>
+<p>如此你就能够将你的改动推送到所添加的服务器上去了。<br>（6）分支<br>分支是用来将功能开发绝缘开来的。在你创建仓库的时候，master 是“默认的”。在其他分支上进行开发，完成后再将它们合并到主分支上，这在多人协同开发时显得尤为有用。<br><img src="git分支图.png" alt=""><br>创建一个叫做“feature_x”的分支，并切换过去：  </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git checkout -b feature_x</div></pre></td></tr></table></figure>
 <p>切换为主分支：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git checkout master</div></pre></td></tr></table></figure>
