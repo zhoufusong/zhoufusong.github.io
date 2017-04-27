@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Swift String," />
 
 
 
@@ -84,15 +84,19 @@
 
 
 
-<meta name="description" content="iOS开发工程师，致力于成为一个全栈工作者">
-<meta property="og:type" content="website">
-<meta property="og:title" content="yufeng's Blog">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="####swift字符串的一些操作
+1、删除字符串前后多余的空格(内部空格没有影响)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="swift字符串的一些操作">
+<meta property="og:url" content="http://yoursite.com/2017/04/27/swift字符串的一些操作/index.html">
 <meta property="og:site_name" content="yufeng's Blog">
-<meta property="og:description" content="iOS开发工程师，致力于成为一个全栈工作者">
+<meta property="og:description" content="####swift字符串的一些操作
+1、删除字符串前后多余的空格(内部空格没有影响)">
+<meta property="og:updated_time" content="2017-04-27T15:48:31.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="yufeng's Blog">
-<meta name="twitter:description" content="iOS开发工程师，致力于成为一个全栈工作者">
+<meta name="twitter:title" content="swift字符串的一些操作">
+<meta name="twitter:description" content="####swift字符串的一些操作
+1、删除字符串前后多余的空格(内部空格没有影响)">
 
 
 
@@ -110,7 +114,7 @@
   };
 </script>
 
-  <title> yufeng's Blog </title>
+  <title> swift字符串的一些操作 | yufeng's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -141,9 +145,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left 
-   page-home 
- ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -260,9 +262,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
   
@@ -282,10 +284,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2017/04/27/swift字符串的一些操作/" itemprop="url">
-                  swift字符串的一些操作
-                </a>
+                swift字符串的一些操作
               
             
           </h1>
@@ -341,491 +340,130 @@
       
 
       
-        
-          <p>####swift字符串的一些操作</p>
+        <p>####swift字符串的一些操作</p>
 <p>1、删除字符串前后多余的空格(内部空格没有影响)</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2017/04/27/swift字符串的一些操作/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//原始字符串</div><div class="line">let str1 = &quot;   欢迎访问 myblog.com   &quot;</div><div class="line">//除去前后空格</div><div class="line">let str2 = str1.trimmingCharacters(in: .whitespaces)</div><div class="line"> </div><div class="line">//打印结果</div><div class="line">print(&quot;原字符串：\(str1)&quot;)</div><div class="line">print(&quot;新字符串：\(str2)&quot;)</div></pre></td></tr></table></figure>
+<p>2、删除前后指定的字符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">//原始字符串</div><div class="line">let str1 = &quot;&lt;&lt;myblog.com&gt;&gt;&quot;</div><div class="line">//删除前后&lt;&gt;</div><div class="line">let characterSet = CharacterSet(charactersIn: &quot;&lt;&gt;&quot;)</div><div class="line">let str2 = str1.trimmingCharacters(in: characterSet)</div><div class="line"> </div><div class="line">//打印结果</div><div class="line">print(&quot;原字符串：\(str1)&quot;)</div><div class="line">print(&quot;新字符串：\(str2)&quot;)</div></pre></td></tr></table></figure>
+<p>CharacterSet 里各个枚举类型的含义如下：</p>
+<ul>
+<li>controlCharacters：控制符</li>
+<li>whitespaces：空格</li>
+<li>newlines：换行符</li>
+<li>whitespacesAndNewlines：空格换行</li>
+<li>decimalDigits：小数</li>
+<li>letters：文字</li>
+<li>lowercaseLetters：小写字母</li>
+<li>uppercaseLetters：大写字母</li>
+<li>nonBaseCharacters：非基础</li>
+<li>alphanumerics：字母数字</li>
+<li>decomposables：可分解</li>
+<li>illegalCharacters：非法</li>
+<li>punctuationCharacters：标点</li>
+<li>capitalizedLetters：大写</li>
+<li>symbols：符号</li>
+</ul>
+<p>3、字符串替换</p>
+<ul>
+<li><p>简单替换</p>
+<p>将所有com替换为COM</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">//原始字符串</div><div class="line">let str1 = &quot;欢迎访问myblog.com.com.com&quot;</div><div class="line">//替换后的字符串</div><div class="line">let str2 = str1.replacingOccurrences(of: &quot;com&quot;, with: &quot;COM&quot;)</div><div class="line">//打印结果</div><div class="line">print(&quot;原字符串：\(str1)&quot;)</div><div class="line">print(&quot;新字符串：\(str2)&quot;)</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用正则表达式替换</p>
+<p>为方便使用，我们这里对 String 做个扩展，增加正则替换相关方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">extension String &#123;</div><div class="line">    //返回字数</div><div class="line">    var count: Int &#123;</div><div class="line">        let string_NS = self as NSString</div><div class="line">        return string_NS.length</div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    //使用正则表达式替换</div><div class="line">    func pregReplace(pattern: String, with: String,</div><div class="line">                     options: NSRegularExpression.Options = []) -&gt; String &#123;</div><div class="line">        let regex = try! NSRegularExpression(pattern: pattern, options: options)</div><div class="line">        return regex.stringByReplacingMatches(in: self, options: [],</div><div class="line">                                              range: NSMakeRange(0, self.count),</div><div class="line">                                              withTemplate: with)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>下面代码我们将字符串中所有的英文字母替换成下划线。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">//原始字符串</div><div class="line">let str1 = &quot;欢迎访问myblog.com&quot;</div><div class="line">//替换后的字符串</div><div class="line">let str2 = str1.pregReplace(pattern: &quot;[a-zA-Z]&quot;, with: &quot;_&quot;)</div><div class="line">//打印结果</div><div class="line">print(&quot;原字符串：\(str1)&quot;)</div><div class="line">print(&quot;新字符串：\(str2)&quot;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>4、字符串过滤</p>
+<p>这个同样可以通过字符串替换的方法实现，即将需要过滤掉的字符串替换成空字符串。</p>
+<ul>
+<li><p>简单过滤</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">//原始字符串</div><div class="line">let str1 = &quot;欢迎访问myblog.com.com.com&quot;</div><div class="line">//替换后的字符串</div><div class="line">let str2 = str1.replacingOccurrences(of: &quot;com&quot;, with: &quot;&quot;)</div><div class="line">//打印结果</div><div class="line">print(&quot;原字符串：\(str1)&quot;)</div><div class="line">print(&quot;新字符串：\(str2)&quot;)</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用正则表达式过滤</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">//原始字符串</div><div class="line">let str1 = &quot;欢迎🆚访问💓😄hangge.com&quot;</div><div class="line">//判断表情的正则表达式</div><div class="line">let pattern = &quot;[\\ud83c\\udc00-\\ud83c\\udfff]|[\\ud83d\\udc00-\\ud83d\\udfff]|[\\u2600-\\u27ff]&quot;</div><div class="line">//替换后的字符串</div><div class="line">let str2 = str1.pregReplace(pattern: pattern, with: &quot;&quot;)</div><div class="line">//打印结果</div><div class="line">print(&quot;原字符串：\(str1)&quot;)</div><div class="line">print(&quot;新字符串：\(str2)&quot;)</div></pre></td></tr></table></figure>
+<p>​</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
         
       
     </div>
 
     <div>
       
-    </div>
+        
 
-    <div>
       
     </div>
 
     <footer class="post-footer">
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/05/leetcode之Max Consecutive Ones/" itemprop="url">
-                  LeetCode-Max Consecutive Ones
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-03-05T19:23:23+08:00" content="2017-03-05">
-              2017-03-05
-            </time>
-          </span>
-
+        <div class="post-tags">
           
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2017/03/05/leetcode之Max Consecutive Ones/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/05/leetcode之Max Consecutive Ones/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/03/05/leetcode之Max Consecutive Ones/" class="leancloud_visitors" data-flag-title="LeetCode-Max Consecutive Ones">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
+            <a href="/tags/Swift-String/" rel="tag">#Swift String</a>
           
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <h4 id="问题Max-Consecutive-Ones"><a href="#问题Max-Consecutive-Ones" class="headerlink" title="问题Max Consecutive Ones"></a>问题Max Consecutive Ones</h4><p>描述：给定二进制的一个数组，找出在数组中连续的1的最大个数，例如[1,1,0,1,1,1]，输出为3</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2017/03/05/leetcode之Max Consecutive Ones/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/05/leetcode之Max Consecutive Ones/" rel="next" title="LeetCode-Max Consecutive Ones">
+                <i class="fa fa-chevron-left"></i> LeetCode-Max Consecutive Ones
+              </a>
+            
           </div>
-        
-      
-    </div>
 
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
+          <div class="post-nav-prev post-nav-item">
             
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/05/leetcode之Find All Numbers Disappeared in an Array/" itemprop="url">
-                  LeetCode-Find All Numbers Disappeared in an Array
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-03-05T19:22:23+08:00" content="2017-03-05">
-              2017-03-05
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2017/03/05/leetcode之Find All Numbers Disappeared in an Array/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/05/leetcode之Find All Numbers Disappeared in an Array/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/03/05/leetcode之Find All Numbers Disappeared in an Array/" class="leancloud_visitors" data-flag-title="LeetCode-Find All Numbers Disappeared in an Array">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
+          </div>
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <h4 id="问题：Find-All-Numbers-Disappeared-in-an-Array"><a href="#问题：Find-All-Numbers-Disappeared-in-an-Array" class="headerlink" title="问题：Find All Numbers Disappeared in an Array"></a>问题：Find All Numbers Disappeared in an Array</h4><p>描述：给定一个整数数组（1 ≤ a[i] ≤n，n是数组的大小），一些元素出现两次而其他元素只出现一次，找出在[1,n]中所有没有出现在数组中的元素。</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2017/03/05/leetcode之Find All Numbers Disappeared in an Array/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
+
+    <div class="post-spread">
       
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
 
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/05/LeetCode之Third Maximum Number/" itemprop="url">
-                  LeetCode-Third Maximum Number
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-03-05T19:21:23+08:00" content="2017-03-05">
-              2017-03-05
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2017/03/05/LeetCode之Third Maximum Number/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/05/LeetCode之Third Maximum Number/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/03/05/LeetCode之Third Maximum Number/" class="leancloud_visitors" data-flag-title="LeetCode-Third Maximum Number">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="问题-Third-Maximum-Number"><a href="#问题-Third-Maximum-Number" class="headerlink" title="问题 Third Maximum Number"></a>问题 Third Maximum Number</h4><p>描述：给定非空整数数组，返回数组中第三大的数，如果它不存在，返回最大的数。时间复杂度必须是O(n)</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2017/03/05/LeetCode之Third Maximum Number/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
       
     </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/22/git使用笔记/" itemprop="url">
-                  git使用笔记
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-02-22T22:03:23+08:00" content="2017-02-22">
-              2017-02-22
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2017/02/22/git使用笔记/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/02/22/git使用笔记/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/02/22/git使用笔记/" class="leancloud_visitors" data-flag-title="git使用笔记">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>git是一种分布式版本控制工具，可以使用命令行和客户端操作两种方式。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2017/02/22/git使用笔记/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-  </section>
-
-  
+  </div>
 
 
           </div>
@@ -833,6 +471,17 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -852,8 +501,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.jpg"
@@ -916,6 +574,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -1012,6 +681,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 
@@ -1028,9 +701,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'zhoufusong';
-      var disqus_identifier = 'index.html';
-      var disqus_title = '';
-      var disqus_url = '';
+      var disqus_identifier = '2017/04/27/swift字符串的一些操作/';
+      var disqus_title = 'swift字符串的一些操作';
+      var disqus_url = 'http://yoursite.com/2017/04/27/swift字符串的一些操作/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
@@ -1041,6 +714,8 @@
       }
 
       run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
       
     </script>
   
