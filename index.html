@@ -371,55 +371,16 @@
 
       
         
-          
-            <p>####前言</p>
+          <p>####前言</p>
 <p>最近在做RN项目，实际上也是继承的React的这套生命周期方法，而且使用了ES6语法，使用上更加直观便利。所以想学习一下React的life-cycle方法。</p>
-<p>在React中，一个组件就是一个状态机，对于特定地输入，它总返回一致的输出。在 React（react native） 的组件化中，有很多有意思的东西，此处想聊一下非常基础也很重要的组件的生命周期，简单地说组件主要就是三个状阶段：mount（组件挂载、已插入真实 DOM）、update（组件更新、正在被重新渲染）和unmount（组件的卸载、已移出真实 DOM）。下图列述了 React 组件在整个生命周期中所涉及的方法和行为：</p>
-<p><img src="./Resources/react-lifecycle.png" alt=""></p>
-<h4 id="Initial"><a href="#Initial" class="headerlink" title="Initial"></a>Initial</h4><p>在组件实例化的时候，会依次调用 <code>getDefaultProps()</code>、<code>getInitialState()</code> 方法初始化数据。</p>
-<p>（1）getDefaultProps</p>
-<p>只在组件创建时调用一次并缓存返回的对象（即在 <code>React.createClass</code> 之后就会调用）。</p>
-<p>因为这个方法在实例初始化之前调用，所以在这个方法里面不能依赖 <code>this</code> 获取到这个组件的实例。</p>
-<p>在组件装载之后，这个方法缓存的结果会用来保证访问 <code>this.props</code> 的属性时，当这个属性没有在父组件中传入（在这个组件的 JSX 属性里设置），也总是有值的。</p>
-<p>如果是使用 ES6 语法，可以直接定义 <code>defaultProps</code> 这个类属性来替代，这样能更直观的知道 default props 是预先定义好的对象值：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Counter.defaultProps = &#123; <span class="attr">initialCount</span>: <span class="number">0</span> &#125;;</div></pre></td></tr></table></figure>
-<p>（2）getInitialState</p>
-<p>初始化 <code>this.state</code> 的值，只在组件装载之前调用一次。</p>
-<p>如果是使用 ES6 的语法，你也可以在构造函数中初始化状态，比如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</div><div class="line">  <span class="keyword">constructor</span>(props) &#123;</div><div class="line">    <span class="keyword">super</span>(props);</div><div class="line">    <span class="keyword">this</span>.state = &#123; <span class="attr">count</span>: props.initialCount &#125;;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  render() &#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>####Mount</p>
-<p>在组件的挂载过程中，会依次调用 componentWillMount()、render() 和 componentDidMount()。挂载完成后，<code>componentWillMount()</code> 和 <code>componentDidMount()</code> 将不会再被触发，<code>render()</code> 则会根据 props 和 state 的变化多次执行。</p>
-<p>在 componentDidMount() 调用之前，只能得到由 render() 返回的虚拟 DOM；在该方法执行时，真实 DOM 的渲染已经完成，此时，可以通过 React 内建的 <code>getDOMNode()</code> 访问真实的 DOM。</p>
-<p>（1）componentWillMount</p>
-<p>这个函数调用时机是在组件创建，并初始化了状态之后，在第一次绘制 <code>render()</code> 之前。可以在这里做一些业务初始化操作，也可以设置组件状态。这个函数在整个生命周期中只被调用一次。注意：该方法在首次渲染之前调用，也是再在render 方法调用之前修改 state 的最后一次机会。</p>
-<p>（2）render</p>
-<p>该方法会创建一个虚拟DOM，用来表示组件的输出。对于一个组件来讲，render方法是唯一一个必需的方法。render方法需要满足下面几点：</p>
-<ol>
-<li>只能通过 this.props 和 this.state 访问数据（不能修改）</li>
-<li>可以返回 null,false 或者任何React组件</li>
-<li>只能出现一个顶级组件，不能返回一组元素</li>
-<li>不能改变组件的状态</li>
-<li>不能修改DOM的输出</li>
-</ol>
-<p>render方法返回的结果并不是真正的DOM元素，而是一个虚拟的表现，类似于一个DOM tree的结构的对象。react之所以效率高，就是这个原因。</p>
-<p>（3）componentDidMount</p>
-<p>在该方法执行时，真实 DOM 的渲染已经完成，此时，可以通过 React 内建的 <code>getDOMNode()</code> 访问真实的 DOM。</p>
-<p>这个函数调用的时候，其虚拟 DOM 已经构建完成，你可以在这个函数开始获取其中的元素或者子组件了。需要注意的是，RN 框架是先调用子组件的 <code>componentDidMount()</code>，然后调用父组件的函数。从这个函数开始，就可以和 JS 其他框架交互了，例如设置计时 <code>setTimeout</code> 或者 <code>setInterval</code>，或者发起网络请求。这个函数也是只被调用一次。这个函数之后，就进入了稳定运行状态，等待事件触发。</p>
-<h4 id="update"><a href="#update" class="headerlink" title="update"></a>update</h4><p>挂载结束后，组件处于监听状态，监听 props 和 state 的变化。props 和 state 的差异在于：state 用于配置组件内的状态，props 则用于在组件间传递数据。</p>
-<p>在实际开发中，这一阶段调用的核心都是围绕 state 展开的。state changed 之后，系统会立即调用 <code>boolean shouldComponentUpdate(object nextProps, object nextState)</code> 方法来决定是否重新渲染页面。当遭遇性能瓶颈时，适当地通过该方法控制页面渲染的频率是为提升性能不二法门。</p>
-<p>当 props changed 时，系统会立即调用 <code>componentWillReciveProps(object nextProps)</code> 方法。该方法常被用来执行 props -&gt; state 的更新，继而触发整个页面的渲染。</p>
-<p>在这一阶段重新渲染页面所需要的同样是 will -&gt; render -&gt; did 三个方法。不同之处在于，此处的 did 和 will 附加了 props 和 state 信息。</p>
-<p>（1）componentWillReceiveProps</p>
-<p>组件的 props 属性可以通过父组件来更改，这时，componentWillReceiveProps 将来被调用。可以在这个方法里更新 state,以触发 render 方法重新渲染组件。</p>
-<p>（2）shouldComponentUpdate</p>
-<p>如果你确定组件的 props 或者 state 的改变不需要重新渲染，可以通过在这个方法里通过返回 <code>false</code> 来阻止组件的重新渲染，返回 `false 则不会执行 render 以及后面的 componentWillUpdate，componentDidUpdate 方法。可以在这个地方做一些性能上的优化。</p>
-<p>（3）componentWillUpdate</p>
-<p>这个方法和 componentWillMount 类似，在组件接收到了新的 props 或者 state 即将进行重新渲染前，componentWillUpdate(object nextProps, object nextState) 会被调用，<strong>注意不要在此方面里再去更新 props 或者 state。</strong></p>
-<p>（4）componentDidUpdate</p>
-<p>这个方法和 componentDidMount 类似，在组件重新被渲染之后，componentDidUpdate(object prevProps, object prevState) 会被调用。可以在这里访问并修改 DOM。</p>
-<h4 id="unmount"><a href="#unmount" class="headerlink" title="unmount"></a>unmount</h4><p>组件卸载前会执行 <code>componentWillUnmount()</code>，用于清理 <code>componentDidMount()</code> 之后创建的组件。此外，对于组件生命周期内累积的监听事件和定时器，也应当在该方法内执行解绑、清除操作。</p>
-
-          
+<p>在React中，一个组件就是一个状态机，对于特定地输入，它总返回一致的输出。在 React（react native） 的组件化中，有很多有意思的东西，此处想聊一下非常基础也很重要的组件的生命周期，简单地说组件主要就是三个状阶段：mount（组件挂载、已插入真实 DOM）、update（组件更新、正在被重新渲染）和unmount（组件的卸载、已移出真实 DOM）。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/12/23/React组件生命周期/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
