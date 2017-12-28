@@ -3,6 +3,24 @@
 
 
     
+    
+  <url>
+    <loc>https://zhoufusong.github.io/2017/12/27/iOS%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B9%8BGCD%E7%AF%87/</loc>
+    <lastmod>2017-12-27T15:36:10.000Z</lastmod>
+    <data>
+        <display>
+        <title>iOS多线程之GCD篇</title>
+        <pubTime>2017-12-27T15:34:57.000Z</pubTime>
+        
+        <tag>iOS,多线程</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
   <url>
     <loc>https://zhoufusong.github.io/2017/12/24/Runloop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
     <lastmod>2017-12-26T15:49:33.000Z</lastmod>
@@ -122,7 +140,6 @@
     </data>
     </url>
 
-    
     
     
 </urlset>

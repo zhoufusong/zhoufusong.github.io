@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://zhoufusong.github.io/tags/index.html</loc>
+    
+    <lastmod>2017-12-28T15:06:56.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zhoufusong.github.io/2017/12/27/iOS%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B9%8BGCD%E7%AF%87/</loc>
+    
+    <lastmod>2017-12-27T15:36:10.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://zhoufusong.github.io/2017/12/24/Runloop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
     
     <lastmod>2017-12-26T15:49:33.000Z</lastmod>
@@ -54,13 +68,6 @@
     <loc>https://zhoufusong.github.io/2017/03/05/leetcode%E4%B9%8BFind%20All%20Numbers%20Disappeared%20in%20an%20Array/</loc>
     
     <lastmod>2017-07-16T13:19:32.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://zhoufusong.github.io/tags/index.html</loc>
-    
-    <lastmod>2017-07-16T13:12:02.000Z</lastmod>
     
   </url>
   
