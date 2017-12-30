@@ -91,19 +91,45 @@
 
 
 
-<meta name="description" content="GCDGCD（Grand Central Dispatch）是 Apple 公司为了提高 OS X 和 iOS 系统在多核处理器上运行并行代码的能力而开发的一系列相关技术，它提供了对线程的高级抽象。GCD 是一整套技术，包含了语言级别的新功能，运行时库，系统级别的优化，这些一起为并发代码的执行提供了系统级别的广泛优化。所以，GCD 也是 Apple 推荐的多线程编程工具。
-GCD 是系统层面的技术">
+<meta name="description" content="前言在学习GCD之前，需要先弄明白几个概念：
+
+并发（Concurrency）与并行（Parallelism）
+
+并发和并行的区别就是一个处理器同时处理多个任务和多个处理器或者是多核的处理器同时处理多个不同的任务。
+前者是逻辑上的同时发生（simultaneous），而后者是物理上的同时发生。
+举个例子：并发和并行的区别就是一个人同时吃三个馒头（交替啃这三个馒头）和三个人同时吃三个馒头。
+
+
+队列">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS多线程之GCD篇">
 <meta property="og:url" content="https://zhoufusong.github.io/2017/12/27/iOS多线程之GCD篇/index.html">
 <meta property="og:site_name" content="御风的博客，keep going！">
-<meta property="og:description" content="GCDGCD（Grand Central Dispatch）是 Apple 公司为了提高 OS X 和 iOS 系统在多核处理器上运行并行代码的能力而开发的一系列相关技术，它提供了对线程的高级抽象。GCD 是一整套技术，包含了语言级别的新功能，运行时库，系统级别的优化，这些一起为并发代码的执行提供了系统级别的广泛优化。所以，GCD 也是 Apple 推荐的多线程编程工具。
-GCD 是系统层面的技术">
-<meta property="og:updated_time" content="2017-12-27T15:36:10.000Z">
+<meta property="og:description" content="前言在学习GCD之前，需要先弄明白几个概念：
+
+并发（Concurrency）与并行（Parallelism）
+
+并发和并行的区别就是一个处理器同时处理多个任务和多个处理器或者是多核的处理器同时处理多个不同的任务。
+前者是逻辑上的同时发生（simultaneous），而后者是物理上的同时发生。
+举个例子：并发和并行的区别就是一个人同时吃三个馒头（交替啃这三个馒头）和三个人同时吃三个馒头。
+
+
+队列">
+<meta property="og:image" content="https://zhoufusong.github.io/./iOS多线程之GCD篇/multithredMethods.jpeg">
+<meta property="og:updated_time" content="2017-12-30T09:49:34.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS多线程之GCD篇">
-<meta name="twitter:description" content="GCDGCD（Grand Central Dispatch）是 Apple 公司为了提高 OS X 和 iOS 系统在多核处理器上运行并行代码的能力而开发的一系列相关技术，它提供了对线程的高级抽象。GCD 是一整套技术，包含了语言级别的新功能，运行时库，系统级别的优化，这些一起为并发代码的执行提供了系统级别的广泛优化。所以，GCD 也是 Apple 推荐的多线程编程工具。
-GCD 是系统层面的技术">
+<meta name="twitter:description" content="前言在学习GCD之前，需要先弄明白几个概念：
+
+并发（Concurrency）与并行（Parallelism）
+
+并发和并行的区别就是一个处理器同时处理多个任务和多个处理器或者是多核的处理器同时处理多个不同的任务。
+前者是逻辑上的同时发生（simultaneous），而后者是物理上的同时发生。
+举个例子：并发和并行的区别就是一个人同时吃三个馒头（交替啃这三个馒头）和三个人同时吃三个馒头。
+
+
+队列">
+<meta name="twitter:image" content="https://zhoufusong.github.io/./iOS多线程之GCD篇/multithredMethods.jpeg">
 
 
 
@@ -400,9 +426,115 @@ GCD 是系统层面的技术">
       
 
       
-        <h3 id="GCD"><a href="#GCD" class="headerlink" title="GCD"></a>GCD</h3><p>GCD（Grand Central Dispatch）是 Apple 公司为了提高 OS X 和 iOS 系统在多核处理器上运行并行代码的能力而开发的一系列相关技术，它提供了对线程的高级抽象。GCD 是一整套技术，包含了语言级别的新功能，运行时库，系统级别的优化，这些一起为并发代码的执行提供了系统级别的广泛优化。所以，GCD 也是 Apple 推荐的多线程编程工具。</p>
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>在学习GCD之前，需要先弄明白几个概念：</p>
+<ul>
+<li><p>并发（Concurrency）与并行（Parallelism）</p>
+<ul>
+<li>并发和并行的区别就是一个处理器同时处理多个任务和多个处理器或者是多核的处理器同时处理多个不同的任务。</li>
+<li>前者是<code>逻辑上</code>的同时发生（simultaneous），而后者是<code>物理上</code>的同时发生。</li>
+<li>举个例子：并发和并行的区别就是一个人同时吃三个馒头（交替啃这三个馒头）和三个人同时吃三个馒头。</li>
+</ul>
+</li>
+<li><p>队列与任务</p>
+<p>任务：执行什么操作，在GCD中就是一个Block。<br>队列：用来存放任务，总共有两种队列，<strong>串行队列</strong>和<strong>并行队列</strong>，遵循FIFO规则。</p>
+<ul>
+<li>放到串行队列的任务，GCD 会 <code>FIFO（先进先出）</code> 地取出来一个，执行一个，然后取下一个，这样一个一个的执行。</li>
+<li>放到并行队列的任务，GCD 也会 FIFO的取出来，但不同的是，它取出来一个就会放到别的线程，然后再取出来一个又放到另一个的线程。这样由于取的动作很快，忽略不计，看起来，所有的任务都是一起执行的。不过需要注意，GCD 会根据系统资源控制并行的数量，所以如果任务很多，它并不会让所有任务同时执行。</li>
+</ul>
+</li>
+<li><p>同步与异步</p>
+<p>同步和异步的主要区别在与会不会阻塞当前线程，直到Block中的任务执行完毕。</p>
+<p>如果是同步操作，它会阻塞当前线程并等待Block中的任务执行完毕，然后当前线程才会继续往下运行。</p>
+<p>如果是异步操作，当前线程会直接往下执行，它不会阻塞当前线程。</p>
+</li>
+<li><p>串行和并发</p>
+<p>串行：一个任务执行完毕后，再执行下一个任务<br>并发：允许多个任务同时执行（逻辑上）</p>
+</li>
+</ul>
+<p>多线程方案对比：</p>
+<p><img src="./iOS多线程之GCD篇/multithredMethods.jpeg" alt=""></p>
+<h4 id="GCD是什么？"><a href="#GCD是什么？" class="headerlink" title="GCD是什么？"></a>GCD是什么？</h4><p>GCD（Grand Central Dispatch）是 Apple 公司为了提高 OS X 和 iOS 系统在多核处理器上运行并行代码的能力而开发的一系列相关技术，它提供了对线程的高级抽象。GCD 是一整套技术，包含了语言级别的新功能，运行时库，系统级别的优化，这些一起为并发代码的执行提供了系统级别的广泛优化。所以，GCD 也是 Apple 推荐的多线程编程工具。</p>
 <p>GCD 是系统层面的技术，除了可以被系统级应用使用，也可以被更普通的高级应用使用。使用 GCD 之后，应用就可以轻松地在多核系统上高效运行并发代码，而不用考虑繁琐的底层问题。GCD 在系统层面工作，能很好地满足所有应用的并行运行需求，将可用系统资源平衡地分配给它们。</p>
-<p>GCD 提供了一套纯 C API。但是，它提供的 API 简单易用并且有功能强大的任务管理和多线程编程能力。GCD 需要和 blocks（Objective－C 的闭包）配合使用。block 是 GCD 执行单元。GCD 的任务需要被拆解到 block 中。block 被排入 GCD 的分发队列，GCD 会为你排期运行。GCD 创建，重用，销毁线程，基于系统资源以它认为合适的方式运行每个队列。所以，用户需要关心的细节并不多。</p>
+<p>GCD 提供了一套<code>纯 C API</code>。但是，它提供的 API 简单易用并且有功能强大的任务管理和多线程编程能力。GCD 需要和 blocks（Objective－C 的闭包）配合使用。block 是 GCD 执行单元。GCD 的任务需要被拆解到 block 中。block 被排入 GCD 的分发队列，GCD 会为你排期运行。GCD 创建，重用，销毁线程，基于系统资源以它认为合适的方式运行每个队列。所以，用户需要关心的细节并不多。</p>
+<h4 id="GCD如何使用"><a href="#GCD如何使用" class="headerlink" title="GCD如何使用"></a>GCD如何使用</h4><p>获取或创建队列</p>
+<ul>
+<li><p>主队列</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t dispatch_get_main_queue(void);//和主线程相关联的串行派发队列(主队列)，在main执行之前由主线程自动创建。</div></pre></td></tr></table></figure>
+</li>
+<li><p>全局队列</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t dispatch_get_global_queue(long identifier, unsigned long flags);</div><div class="line">/// - identifier(priority)</div><div class="line">//The quality of service you want to give to tasks executed using this queue.(high-&gt;low) </div><div class="line">//QOS_CLASS_USER_INTERACTIVE,</div><div class="line">//QOS_CLASS_USER_INITIATED,</div><div class="line">//QOS_CLASS_UTILITY, </div><div class="line">//QOS_CLASS_BACKGROUND. </div><div class="line">/// - flags</div><div class="line">//Flags that are reserved for future use. Always specify 0 for this parameter.</div></pre></td></tr></table></figure>
+</li>
+<li><p>自定义队列</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t dispatch_queue_create(const char *label, dispatch_queue_attr_t attr);</div><div class="line">///-label</div><div class="line">//A string label to attach to the queue to uniquely identify it in debugging tools such as Instruments, sample, stackshots, and crash reports. Because applications, libraries, and frameworks can all create their own dispatch queues, a reverse-DNS naming style (com.example.myqueue) is recommended. This parameter is optional and can be NULL.</div><div class="line">///-attr</div><div class="line">//specify DISPATCH_QUEUE_SERIAL (or NULL) to create a serial queue or specify DISPATCH_QUEUE_CONCURRENT to create a concurrent queue.</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>创建任务</p>
+<ul>
+<li><p>同步任务：会阻塞当前线程 (<strong>SYNC</strong>)</p>
+<p><code>dispatch_sync</code>: Submits a block object for execution on a dispatch queue and waits until that block completes.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">void dispatch_sync(dispatch_queue_t queue, dispatch_block_t block);</div><div class="line">///-queue</div><div class="line">// The queue on which to submit the block. This parameter cannot be NULL.</div><div class="line">///-block</div><div class="line">//The block to be invoked on the target dispatch queue. This parameter cannot be NULL.</div></pre></td></tr></table></figure>
+<p>实际使用类似于下面这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dispatch_sync(&lt;#queue#&gt;,^&#123;</div><div class="line">    //code here</div><div class="line">    NSLog(@&quot;%@&quot;, [NSThread currentThread]);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+</li>
+<li><p>异步任务：不会阻塞当前线程 (<strong>ASYNC</strong>)</p>
+<p><code>dispatch_async</code>: Submits a block for asynchronous execution on a dispatch queue and returns immediately.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">void dispatch_async(dispatch_queue_t queue, dispatch_block_t block);</div><div class="line">///-queue</div><div class="line">//The queue on which to submit the block. The queue is retained by the system until the block has run to completion. This parameter cannot be NULL.</div><div class="line">///-block</div><div class="line">//The block to submit to the target dispatch queue. This function performs Block_copy and Block_release on behalf of callers. This parameter cannot be NULL.</div></pre></td></tr></table></figure>
+<p>实际使用类似于下面这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dispatch_async(&lt;#queue#&gt;, ^&#123;</div><div class="line">    //code here</div><div class="line">    NSLog(@&quot;%@&quot;, [NSThread currentThread]);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>栗子分析</p>
+</li>
+</ul>
+<p>（1）在主线程中调用，以下代码结果是什么？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">NSLog(@&quot;1&quot;); //任务1</div><div class="line">dispatch_sync(dispatch_get_main_queue(), ^&#123;</div><div class="line">    NSLog(@&quot;2&quot;); //任务2</div><div class="line">&#125;);</div><div class="line">NSLog(@&quot;3&quot;); //任务3</div><div class="line"></div><div class="line">//output</div><div class="line">1</div></pre></td></tr></table></figure>
+<p>分析：首先执行任务1，打印出1，程序遇到dispatch_sync会立即阻塞当前主线程，把任务2放到主队列中， 等待任务2执行完，再执行任务3。可是主队列是按照FIFO原则执行任务，此时主队列中任务3排在任务2之前，所以要等到任务3执行完后才能执行任务2，这就会造成他们进入互相等待的局面，从而产生死锁。避免死锁的方法是在使用dispatch_sync执行任务时，传入参数的队列不要和当前线程的队列是一样的。</p>
+<p>（2）以下代码的输出结果是什么？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queue = dispatch_queue_create(&quot;myQueue&quot;, DISPATCH_QUEUE_SERIAL);</div><div class="line">NSLog(@&quot;1&quot;); //任务1</div><div class="line">dispatch_async(queue, ^&#123;</div><div class="line">    NSLog(@&quot;2&quot;); //任务2</div><div class="line">    dispatch_sync(queue, ^&#123;</div><div class="line">        NSLog(@&quot;3&quot;); //任务3</div><div class="line">    &#125;);</div><div class="line">    NSLog(@&quot;4&quot;); //任务4</div><div class="line">&#125;);</div><div class="line">NSLog(@&quot;5&quot;); //任务5</div><div class="line"></div><div class="line">//output</div><div class="line">1</div><div class="line">5</div><div class="line">2(5和2的顺序不一定)</div></pre></td></tr></table></figure>
+<p>分析：首先自定义创建了一个串行队列(DISPATCH_QUEUE_SERIAL)。执行任务1，打印出1。dispatch_async 是异步执行，所以当前线程不会被阻塞，会另外开启一个新线程，于是当前有两个线程在运行，管他们叫主线程和辅线程。主线程继续执行任务5，打印出5。辅线程执行Block中的任务。而Block中的任务和上一个例子问题1是一样的。可以按照上个例子方法分析，只会执行任务2，打印出2。由于主线程和辅线程是异步执行的，所以5和2没有先后顺序。</p>
+<p>以上只是基本用法，还有一些其他用法：</p>
+<ul>
+<li><p>延后执行（dispatch_after）</p>
+<p>严谨点实际上是延后异步把block加入queue，至于执行取决于queue</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">void dispatch_after(dispatch_time_t when, dispatch_queue_t queue, dispatch_block_t block);</div><div class="line">///-when</div><div class="line">//The temporal milestone returned by dispatch_time or dispatch_walltime.</div><div class="line">///-queue</div><div class="line">//The queue on which to submit the block. The queue is retained by the system until the block has run to completion. This parameter cannot be NULL.</div><div class="line">///-block</div><div class="line">//The block to submit. This function performs a Block_copy and Block_release on behalf of the caller. This parameter cannot be NULL.</div></pre></td></tr></table></figure>
+<p>实际使用如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//创建队列</div><div class="line">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">//设置延时，单位秒</div><div class="line">double delay = 3; </div><div class="line"></div><div class="line">dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), queue, ^&#123;</div><div class="line">    //3秒后需要执行的任务</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>dispatch_once_t实现单例模式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">static dispatch_once_t onceToken;</div><div class="line">dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">    //dispatch_once中的代码只执行一次，常用来实现单例</div><div class="line">    //创建实例变量</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>循环执行任务</li>
+</ul>
+<p>dispatch_apply类似一个for循环，并发的执行每一项。所有任务结束后，dispatch_apply才会返回，会阻塞当前线程。<strong>如果传入队列是串行队列，要注意防止死锁现象的发生。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">void dispatch_apply(size_t iterations, dispatch_queue_t queue, void (^block)(size_t));</div><div class="line">/*</div><div class="line">- iterations</div><div class="line">The number of iterations to perform.</div><div class="line">- queue</div><div class="line">The queue on which to submit the block. This parameter cannot be NULL.</div><div class="line">- block</div><div class="line">The application-defined function to be submitted. This parameter cannot be NULL.</div><div class="line">*/</div></pre></td></tr></table></figure>
+<p>实际如下使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//循环执行任务，任务的顺序是无序列的并且会堵塞当前的线程。</div><div class="line">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">// count: 循环执行次数</div><div class="line">// queue: 队列，可以是串行队列或者是并行队列</div><div class="line">// block: 任务</div><div class="line">dispatch_apply(count, queue, ^(size_t i) &#123;</div><div class="line">    NSLog(@&quot;%zu %@&quot;, i, [NSThread currentThread]);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>队列组（dispatch_group）</li>
+</ul>
+<p>队列组将很多队列添加到一个组里，当组里所有任务都执行完后，它会通过一个方法通知我们。基本流程是首先创建一个队列组，然后把任务添加到组中，最后等待队列组的执行结果。</p>
+<p>dispatch_group_create=&gt;dispatch_group_async=&gt; dispatch_group_notify=&gt;dispatch_group_wait</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">long dispatch_group_wait(dispatch_group_t group, dispatch_time_t timeout);</div><div class="line">/*</div><div class="line">Returns zero on success (all blocks associated with the group completed before the specified timeout) or non-zero on error (timeout occurred).</div><div class="line">*/</div></pre></td></tr></table></figure>
+<p>实际上使用如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">//创建队列组</div><div class="line">dispatch_group_t group = dispatch_group_create();</div><div class="line">//创建队列</div><div class="line">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">    </div><div class="line">//将执行任务添加到队列组中, 队列组只有异步方法能添加任务</div><div class="line">//执行3次循环</div><div class="line">dispatch_group_async(group, queue, ^&#123;</div><div class="line">    for (NSInteger i = 0; i &lt; 3; i++) &#123;</div><div class="line">         NSLog(@&quot;group-01 - %@&quot;, [NSThread currentThread]);</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line">    </div><div class="line">//主队列执行8次循环</div><div class="line">dispatch_group_async(group, dispatch_get_main_queue(), ^&#123;</div><div class="line">	for (NSInteger i = 0; i &lt; 5; i++) &#123;</div><div class="line">        NSLog(@&quot;group-02 - %@&quot;, [NSThread currentThread]);</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line">    </div><div class="line">//都完成后会自动通知,在主线程运行这个block</div><div class="line">dispatch_group_notify(group, dispatch_get_main_queue(), ^&#123;</div><div class="line">    NSLog(@&quot;完成 - %@&quot;, [NSThread currentThread]);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>Dispatch Semaphore</li>
+</ul>
+<p><code>dispatch_semaphore_t</code> 类似信号量,可以用来控制访问某一资源访问数量。<br>使用过程：</p>
+<ol>
+<li>先创建一个Dispatch Semaphore对象，用整数值表示资源的可用数量</li>
+<li>在每个任务中，调用dispatch_semaphore_wait来等待</li>
+<li>获得资源就可以进行操作</li>
+<li>操作完后调用dispatch_semaphore_signal来释放资源</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);</div><div class="line">__block NSString *strTest = @&quot;test&quot;;</div><div class="line"></div><div class="line">dispatch_async(concurrentQueue, ^&#123;</div><div class="line">    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">    if ([strTest isEqualToString:@&quot;test&quot;]) &#123;</div><div class="line">        NSLog(@&quot;--%@--1-&quot;, strTest);</div><div class="line">        [NSThread sleepForTimeInterval:1];</div><div class="line">        if ([strTest isEqualToString:@&quot;test&quot;]) &#123;</div><div class="line">            [NSThread sleepForTimeInterval:1];</div><div class="line">            NSLog(@&quot;--%@--2-&quot;, strTest);</div><div class="line">        &#125; else &#123;</div><div class="line">            NSLog(@&quot;====changed===&quot;);</div><div class="line">        &#125;</div><div class="line">     &#125;</div><div class="line">     dispatch_semaphore_signal(semaphore);</div><div class="line">&#125;);</div><div class="line">dispatch_async(concurrentQueue, ^&#123;</div><div class="line">    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">    NSLog(@&quot;--%@--3-&quot;, strTest);</div><div class="line">    dispatch_semaphore_signal(semaphore);</div><div class="line">&#125;);</div><div class="line">dispatch_async(concurrentQueue, ^&#123;</div><div class="line">    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">    strTest = @&quot;modify&quot;;</div><div class="line">    NSLog(@&quot;--%@--4-&quot;, strTest);</div><div class="line">    dispatch_semaphore_signal(semaphore);</div><div class="line">&#125;);</div><div class="line">dispatch_async(concurrentQueue, ^&#123;</div><div class="line">    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">    NSLog(@&quot;--%@--5-&quot;, strTest);</div><div class="line">    dispatch_semaphore_signal(semaphore);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>dispatch_barrier（dispatch_barrier_async、dispatch_barrier_sync）</li>
+</ul>
+<p>当这个函数加入到队列后，里面block并不是立即执行的，它会先等待之前正在执行的block全部完成后，才执行，并且在它之后加入到队列中的block也在它操作结束后才能恢复之前的并发执行。我们可以把这个函数理解为一条分割线，之前的操作，之后加入的操作。还有一个点要说明的是这个queue必须是用dispatch_queue_create创建出来的才行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">//并发队列</div><div class="line">    dispatch_queue_t concurrentQueue = dispatch_queue_create(&quot;com.gcd.concurrentQueue&quot;, DISPATCH_QUEUE_CONCURRENT);</div><div class="line"></div><div class="line">    __block NSString *strTest = @&quot;test&quot;;</div><div class="line"></div><div class="line">    dispatch_async(concurrentQueue, ^&#123;</div><div class="line">        if ([strTest isEqualToString:@&quot;test&quot;]) &#123;</div><div class="line">            NSLog(@&quot;--%@--1-&quot;, strTest);</div><div class="line">            [NSThread sleepForTimeInterval:1];</div><div class="line">            if ([strTest isEqualToString:@&quot;test&quot;]) &#123;</div><div class="line">                [NSThread sleepForTimeInterval:1];</div><div class="line">                NSLog(@&quot;--%@--2-&quot;, strTest);</div><div class="line">            &#125; else &#123;</div><div class="line">                NSLog(@&quot;====changed===&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">    dispatch_async(concurrentQueue, ^&#123;</div><div class="line">        NSLog(@&quot;--%@--3-&quot;, strTest);</div><div class="line">    &#125;);</div><div class="line">    dispatch_barrier_async(concurrentQueue, ^&#123;</div><div class="line">        strTest = @&quot;modify&quot;;</div><div class="line">        NSLog(@&quot;--%@--4-&quot;, strTest);</div><div class="line">    &#125;);</div><div class="line">    dispatch_async(concurrentQueue, ^&#123;</div><div class="line">        NSLog(@&quot;--%@--5-&quot;, strTest);</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">//output</div><div class="line">--test--1-</div><div class="line">--test--3-</div><div class="line">--test--2-</div><div class="line">--modify--4-</div><div class="line">--modify--5-</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -617,7 +749,7 @@ GCD 是系统层面的技术">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#GCD"><span class="nav-number">1.</span> <span class="nav-text">GCD</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GCD是什么？"><span class="nav-number">2.</span> <span class="nav-text">GCD是什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GCD如何使用"><span class="nav-number">3.</span> <span class="nav-text">GCD如何使用</span></a></li></ol></div>
             
 
           </div>
