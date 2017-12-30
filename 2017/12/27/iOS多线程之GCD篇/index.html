@@ -97,10 +97,7 @@
 
 并发和并行的区别就是一个处理器同时处理多个任务和多个处理器或者是多核的处理器同时处理多个不同的任务。
 前者是逻辑上的同时发生（simultaneous），而后者是物理上的同时发生。
-举个例子：并发和并行的区别就是一个人同时吃三个馒头（交替啃这三个馒头）和三个人同时吃三个馒头。
-
-
-队列">
+举个例子：并发和并行的区别就是一个人同时吃三个馒头（交替啃这三个馒头）和三个人同时吃三个馒头。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS多线程之GCD篇">
 <meta property="og:url" content="https://zhoufusong.github.io/2017/12/27/iOS多线程之GCD篇/index.html">
@@ -111,12 +108,9 @@
 
 并发和并行的区别就是一个处理器同时处理多个任务和多个处理器或者是多核的处理器同时处理多个不同的任务。
 前者是逻辑上的同时发生（simultaneous），而后者是物理上的同时发生。
-举个例子：并发和并行的区别就是一个人同时吃三个馒头（交替啃这三个馒头）和三个人同时吃三个馒头。
-
-
-队列">
-<meta property="og:image" content="https://zhoufusong.github.io/./iOS多线程之GCD篇/multithredMethods.jpeg">
-<meta property="og:updated_time" content="2017-12-30T09:49:34.000Z">
+举个例子：并发和并行的区别就是一个人同时吃三个馒头（交替啃这三个馒头）和三个人同时吃三个馒头。">
+<meta property="og:image" content="https://zhoufusong.github.io/multithredMethods.jpeg">
+<meta property="og:updated_time" content="2017-12-30T09:52:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS多线程之GCD篇">
 <meta name="twitter:description" content="前言在学习GCD之前，需要先弄明白几个概念：
@@ -125,11 +119,8 @@
 
 并发和并行的区别就是一个处理器同时处理多个任务和多个处理器或者是多核的处理器同时处理多个不同的任务。
 前者是逻辑上的同时发生（simultaneous），而后者是物理上的同时发生。
-举个例子：并发和并行的区别就是一个人同时吃三个馒头（交替啃这三个馒头）和三个人同时吃三个馒头。
-
-
-队列">
-<meta name="twitter:image" content="https://zhoufusong.github.io/./iOS多线程之GCD篇/multithredMethods.jpeg">
+举个例子：并发和并行的区别就是一个人同时吃三个馒头（交替啃这三个馒头）和三个人同时吃三个馒头。">
+<meta name="twitter:image" content="https://zhoufusong.github.io/multithredMethods.jpeg">
 
 
 
@@ -434,6 +425,7 @@
 <li>前者是<code>逻辑上</code>的同时发生（simultaneous），而后者是<code>物理上</code>的同时发生。</li>
 <li>举个例子：并发和并行的区别就是一个人同时吃三个馒头（交替啃这三个馒头）和三个人同时吃三个馒头。</li>
 </ul>
+<a id="more"></a>
 </li>
 <li><p>队列与任务</p>
 <p>任务：执行什么操作，在GCD中就是一个Block。<br>队列：用来存放任务，总共有两种队列，<strong>串行队列</strong>和<strong>并行队列</strong>，遵循FIFO规则。</p>
@@ -452,7 +444,7 @@
 </li>
 </ul>
 <p>多线程方案对比：</p>
-<p><img src="./iOS多线程之GCD篇/multithredMethods.jpeg" alt=""></p>
+<p><img src="multithredMethods.jpeg" alt=""></p>
 <h4 id="GCD是什么？"><a href="#GCD是什么？" class="headerlink" title="GCD是什么？"></a>GCD是什么？</h4><p>GCD（Grand Central Dispatch）是 Apple 公司为了提高 OS X 和 iOS 系统在多核处理器上运行并行代码的能力而开发的一系列相关技术，它提供了对线程的高级抽象。GCD 是一整套技术，包含了语言级别的新功能，运行时库，系统级别的优化，这些一起为并发代码的执行提供了系统级别的广泛优化。所以，GCD 也是 Apple 推荐的多线程编程工具。</p>
 <p>GCD 是系统层面的技术，除了可以被系统级应用使用，也可以被更普通的高级应用使用。使用 GCD 之后，应用就可以轻松地在多核系统上高效运行并发代码，而不用考虑繁琐的底层问题。GCD 在系统层面工作，能很好地满足所有应用的并行运行需求，将可用系统资源平衡地分配给它们。</p>
 <p>GCD 提供了一套<code>纯 C API</code>。但是，它提供的 API 简单易用并且有功能强大的任务管理和多线程编程能力。GCD 需要和 blocks（Objective－C 的闭包）配合使用。block 是 GCD 执行单元。GCD 的任务需要被拆解到 block 中。block 被排入 GCD 的分发队列，GCD 会为你排期运行。GCD 创建，重用，销毁线程，基于系统资源以它认为合适的方式运行每个队列。所以，用户需要关心的细节并不多。</p>
