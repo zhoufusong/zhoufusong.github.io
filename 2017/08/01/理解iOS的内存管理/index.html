@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next muse" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS内存管理," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="前言​    iOS开发中内存中的对象主要有两类，一类是值类型，比如int、float、struct等基本数据类型，另一类是引用类型，也就是继承自NSObject类的所有的OC对象。前一种值类型不需要我们管理，后一种引用类型是需要我们管理内存的。Objective-c中提供了两种内存管理机制MRC（Mannul Reference Counting）和ARC(Automatic Reference">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解iOS的内存管理">
+<meta property="og:url" content="https://zhoufusong.github.io/2017/08/01/理解iOS的内存管理/index.html">
+<meta property="og:site_name" content="御风的博客，keep going！">
+<meta property="og:description" content="前言​    iOS开发中内存中的对象主要有两类，一类是值类型，比如int、float、struct等基本数据类型，另一类是引用类型，也就是继承自NSObject类的所有的OC对象。前一种值类型不需要我们管理，后一种引用类型是需要我们管理内存的。Objective-c中提供了两种内存管理机制MRC（Mannul Reference Counting）和ARC(Automatic Reference">
+<meta property="og:updated_time" content="2018-01-04T16:15:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="理解iOS的内存管理">
+<meta name="twitter:description" content="前言​    iOS开发中内存中的对象主要有两类，一类是值类型，比如int、float、struct等基本数据类型，另一类是引用类型，也就是继承自NSObject类的所有的OC对象。前一种值类型不需要我们管理，后一种引用类型是需要我们管理内存的。Objective-c中提供了两种内存管理机制MRC（Mannul Reference Counting）和ARC(Automatic Reference">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://zhoufusong.github.io/2017/08/01/理解iOS的内存管理/"/>
+
+
+
+
+
+  <title>理解iOS的内存管理 | 御风的博客，keep going！</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?9e5cd8343041619d5831f1168cecb2b7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">御风的博客，keep going！</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">iOS（React Native）工程师，基本会保持每周一更</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-photos">
+          <a href="/photos/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-camera"></i> <br />
+            
+            照片
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-book">
+          <a href="/book/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书籍
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-movies">
+          <a href="/movies/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-film"></i> <br />
+            
+            电影
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'iP8-2uJDBv1aAnXsLdb-','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://zhoufusong.github.io/2017/08/01/理解iOS的内存管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="yufeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="御风的博客，keep going！">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">理解iOS的内存管理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-01T16:28:14+08:00">
+                2017-08-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>​    iOS开发中内存中的对象主要有两类，一类是值类型，比如int、float、struct等基本数据类型，另一类是引用类型，也就是继承自NSObject类的所有的OC对象。前一种值类型不需要我们管理，后一种引用类型是需要我们管理内存的。Objective-c中提供了两种内存管理机制MRC（Mannul Reference Counting）和ARC(Automatic Reference Counting)，分别提供对内存的手动和自动管理。相比使用MRC手工管理内存的年代，现在使用ARC自动引用计数的iOS开发者实在是太幸福了，但是内存管理仍然是我们要重点关注的话题，我们每一个 iOS 开发者，需要理解引用计数这种内存管理方式，只有这样，才能处理好内存管理相关的问题。</p>
+<a id="more"></a>
+<h4 id="内存管理的基础-引用计数"><a href="#内存管理的基础-引用计数" class="headerlink" title="内存管理的基础-引用计数"></a>内存管理的基础-引用计数</h4><p>​    引用计数（Reference Count）是一个简单实用的管理对象生命周期的方式。当我们创建一个新对象的时候，它的引用计数为 1，当有一个新的指针指向这个对象时，我们将其引用计数加 1，当某个指针不再指向这个对象是，我们将其引用计数减 1，当对象的引用计数变为 0 时，说明这个对象不再被任何指针指向了，这个时候我们就可以将对象销毁，回收内存。每个OC对象内部都专门有四个字节来存储引用计数器，它是一个整数，表示对象被引用的次数，通过它可以判断对象是否被回收，如果引用计数为0，对象回收，不为0不回收。当对象执行alloc、new或者retain时，引用计数加1，release时，引用计数减1。</p>
+<h5 id="MRC"><a href="#MRC" class="headerlink" title="MRC"></a>MRC</h5><p>​    MRC模式下，所有的对象都需要手动的添加retain、release代码来管理内存。使用MRC，需要遵守谁创建，谁回收的原则。也就是谁alloc，谁release；谁retain，谁release。当引用计数为0的时候，必须回收，引用计数不为0，不能回收，如果引用计数为0，但是没有回收，会造成内存泄露。如果引用计数为0，继续释放，会造成野指针。为了避免出现野指针，我们在释放的时候，会先让指针=nil。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">对象操作</th>
+<th style="text-align:center">OC中对应的方法</th>
+<th style="text-align:center">对应的引用计数的变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">生成并持有对象</td>
+<td style="text-align:center">alloc/new/copy/mutableCopy等</td>
+<td style="text-align:center">+1</td>
+</tr>
+<tr>
+<td style="text-align:left">持有对象</td>
+<td style="text-align:center">retain</td>
+<td style="text-align:center">+1</td>
+</tr>
+<tr>
+<td style="text-align:left">释放对象</td>
+<td style="text-align:center">release</td>
+<td style="text-align:center">-1</td>
+</tr>
+<tr>
+<td style="text-align:left">废弃对象</td>
+<td style="text-align:center">dealloc</td>
+<td style="text-align:center">-</td>
+</tr>
+</tbody>
+</table>
+<p>主要有一下四种情况，所以一定要小心管理内存。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">/*</div><div class="line"> * 自己生成并持有该对象</div><div class="line"> */</div><div class="line"> id obj0 = [[NSObeject alloc] init];</div><div class="line"> id obj1 = [NSObeject new];</div><div class="line"></div><div class="line">/*</div><div class="line"> * 持有非自己生成的对象</div><div class="line"> */</div><div class="line">id obj = [NSArray array]; // 非自己生成的对象，且该对象存在，但自己不持有</div><div class="line">[obj retain]; // 自己持有对象</div><div class="line"></div><div class="line">/*</div><div class="line"> * 不在需要自己持有的对象的时候，释放</div><div class="line"> */</div><div class="line">id obj = [[NSObeject alloc] init]; // 此时持有对象</div><div class="line">[obj release]; // 释放对象</div><div class="line">/*</div><div class="line"> * 指向对象的指针仍就被保留在obj这个变量中</div><div class="line"> * 但对象已经释放，不可访问</div><div class="line"> */</div><div class="line">/*</div><div class="line"> * 非自己持有的对象无法释放</div><div class="line"> */</div><div class="line">id obj = [NSArray array]; // 非自己生成的对象，且该对象存在，但自己不持有</div><div class="line">[obj release]; // ~~~此时将运行时crash 或编译器报error~~~ 非 ARC 下，调用该方法会导致编译器报 issues。此操作的行为是未定义的，可能会导致运行时 crash 或者其它未知行为</div></pre></td></tr></table></figure>
+<h5 id="ARC"><a href="#ARC" class="headerlink" title="ARC"></a>ARC</h5><p>​    在ARC模式下，只要没有强指针（强引用）指向对象，对象就会被释放。在ARC模式下，不允许使用retain、release、retainCount等方法。并且，如果使用dealloc方法时，不允许调用[super dealloc]方法。ARC模式下的property变量修饰词为strong、weak，相当于MRC模式下的retain、assign。strong :代替retain，缺省关键词，代表强引用。weak：代替assign，声明了一个可以自动设置nil的弱引用，但是比assign多一个功能，指针指向的地址被释放之后，指针本身也会自动被释放。实现方式是在编译时期自动在已有代码中插入合适的内存管理代码以及在 Runtime 做一些优化。</p>
+<p>ARC提供四种与内存管理有关的变量标识符，分别是：</p>
+<ul>
+<li>__strong</li>
+<li>__weak</li>
+<li>_ <em>unsafe </em> _unretained</li>
+<li>__autoReleasing</li>
+</ul>
+<p><code>__strong</code> 是默认使用的标识符。只有还有一个强指针指向某个对象，这个对象就会一直存活。</p>
+<p><code>__weak</code> 声明这个引用不会保持被引用对象的存活，如果对象没有强引用了，弱引用会被置为 nil</p>
+<p><code>__unsafe_unretained</code> 声明这个引用不会保持被引用对象的存活，如果对象没有强引用了，它不会被置为 nil。如果它引用的对象被回收掉了，该指针就变成了野指针。</p>
+<p><code>__autoreleasing</code> 用于标示使用引用传值的参数（id *），在函数返回时会被自动释放掉。</p>
+<p>变量标识符的用法如下，在类型和变量名之间：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Number* __strong num = [[Number alloc] init];</div></pre></td></tr></table></figure>
+<p>属性标识符</p>
+<p>类中的属性也可以加上标志符：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">@property (assign/retain/strong/weak/unsafe_unretained/copy) Number* num</div></pre></td></tr></table></figure>
+<p><code>assign</code>表明 setter 仅仅是一个简单的赋值操作，通常用于基本的数值类型，例如<code>CGFloat</code>和<code>NSInteger</code>。</p>
+<p><code>strong</code> 表明属性定义一个拥有者关系。当给属性设定一个新值的时候，首先这个值进行 <code>retain</code> ，旧值进行 <code>release</code> ，然后进行赋值操作。</p>
+<p><code>weak</code> 表明属性定义了一个非拥有者关系。当给属性设定一个新值的时候，这个值不会进行 <code>retain</code>，旧值也不会进行 <code>release</code>， 而是进行类似 <code>assign</code> 的操作。不过当属性指向的对象被销毁时，该属性会被置为nil。</p>
+<p><code>unsafe_unretained</code> 的语义和 <code>assign</code> 类似，不过是用于对象类型的，表示一个非拥有(unretained)的，同时也不会在对象被销毁时置为nil的(unsafe)关系。</p>
+<p><code>copy</code> 类似于 <code>strong</code>，不过在赋值时进行 <code>copy</code> 操作而不是 <code>retain</code> 操作。通常在需要保留某个不可变对象（NSString最常见），并且防止它被意外改变时使用。</p>
+<p>unsafe_unretained的用处用两点：（1）兼容性，iOS4之前没有weak只能用unsafe_unretained（2）性能考虑，性能比weak要好。</p>
+<h4 id="ARC下仍然需要注意的内存管理问题"><a href="#ARC下仍然需要注意的内存管理问题" class="headerlink" title="ARC下仍然需要注意的内存管理问题"></a>ARC下仍然需要注意的内存管理问题</h4><ul>
+<li>循环引用问题。</li>
+</ul>
+<p>当两个对象互相持有对方的强引用时，并且这两个对象的引用计数都不是0的时候，便造成了引用循环，从而使用计数后内存无法得到释放。可以从以下几个方面入手：</p>
+<p>（1）注意变量作用域，使用 <code>autorelease</code> 让编译器来处理引用</p>
+<p>Autorelase Pool 提供了一种可以允许你向一个对象延迟发送<code>release</code>消息的机制。当你想放弃一个对象的所有权，同时又不希望这个对象立即被释放掉（例如在一个方法中返回一个对象时），Autorelease Pool 的作用就显现出来了。</p>
+<p>所谓的延迟发送<code>release</code>消息指的是，当我们把一个对象标记为<code>autorelease</code>时:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">NSString* str = [[[NSString alloc] initWithString:@&quot;hello&quot;] autorelease];</div></pre></td></tr></table></figure>
+<p>这个对象的 retainCount 会+1，但是并不会发生 release。当这段语句所处的 autoreleasepool 进行 drain 操作时，所有标记了 <code>autorelease</code> 的对象的 retainCount 会被 -1。即 <code>release</code> 消息的发送被延迟到 pool 释放的时候了。</p>
+<p>在 ARC 环境下，苹果引入了 <code>@autoreleasepool</code> 语法，不再需要手动调用 <code>autorelease</code> 和 <code>drain</code> 等方法。</p>
+<p>系统在 runloop 中创建的 autoreleaspool 会在 runloop 一个 event 结束时进行释放操作。我们手动创建的 autoreleasepool 会在 block 执行完成之后进行 drain 操作。</p>
+<p>！！！main.m 中 Autorelease Pool 的解释</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">int main(int argc, char * argv[]) &#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里的 pool 有什么作用，能不能去掉之类? 在这里我们分析一下。</p>
+<p>根据<a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIKitFunctionReference/index.html#//apple_ref/c/func/UIApplicationMain" target="_blank" rel="external">苹果官方文档</a>， UIApplicationMain 函数是整个 app 的入口，用来创建 application 对象（单例）和 application delegate。尽管这个函数有返回值，但是实际上却永远不会返回，当按下 Home 键时，app 只是被切换到了后台状态。</p>
+<p>同时参考苹果关于 Lifecycle 的<a href="https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/TheAppLifeCycle/TheAppLifeCycle.html" target="_blank" rel="external">官方文档</a>，UIApplication 自己会创建一个 main run loop，我们大致可以得到下面的结论：</p>
+<ol>
+<li>main.m 中的 UIApplicationMain 永远不会返回，只有在系统 kill 掉整个 app 时，系统会把应用占用的内存全部释放出来。</li>
+<li>因为(1)， UIApplicationMain 永远不会返回，这里的 autorelease pool 也就永远不会进入到释放那个阶段</li>
+<li>在 (2) 的基础上，假设有些变量真的进入了 main.m 里面这个 pool（没有被更内层的 pool 捕获），那么这些变量实际上就是被泄露的。这个 autorelease pool 等于是把这种泄露情况给隐藏起来了。</li>
+<li><p>UIApplication 自己会创建 main run loop，在 Cocoa 的 runloop 中实际上也是自动包含 autorelease pool 的，因此 main.m 当中的 pool 可以认为是<strong>没有</strong>必要的。</p>
+<p>因为我们看不到更底层的代码，加上苹果的文档中不建议修改 main.m ，所以我们也没有理由就直接把它删掉。</p>
+</li>
+</ol>
+<p>!!! Autorelease Pool 与函数返回值</p>
+<p>如果一个函数的返回值是指向一个对象的指针，那么这个对象肯定不能在函数返回之前进行 release，这样调用者在调用这个函数时得到的就是野指针了，在函数返回之后也不能立刻就 release，因为我们不知道调用者是不是 retain 了这个对象，如果我们直接 release 了，可能导致后面在使用这个对象时它已经成为 nil 了。</p>
+<p>为了解决这个纠结的问题， Objective-C 中对对象指针的返回值进行了区分，一种叫做 <em>retained return value</em>，另一种叫做 <em>unretained return value</em>。前者表示调用者拥有这个返回值，后者表示调用者不拥有这个返回值，按照“谁拥有谁释放”的原则，对于前者调用者是要负责释放的，对于后者就不需要了。</p>
+<p>按照苹果的命名习惯，以 <code>alloc</code>, <code>copy</code>, <code>init</code>, <code>mutableCopy</code> 和 <code>new</code> 这些方法打头的方法，返回的都是 retained return value，例如 <code>[[NSString alloc] initWithFormat:]</code>，而其他的则是 unretained return value，例如 <code>[NSString stringWithFormat:]</code>。我们在编写代码时也应该遵守这个习惯。</p>
+<p>（2）使用弱引用(weak)</p>
+<p>​    弱引用虽然持有对象，但是并不增加引用计数，这样就避免了循环引用的产生。在 iOS 开发中，弱引用通常在 delegate 模式中使用。</p>
+<p>​    弱引用的实现原理是这样，系统对于每一个有弱引用的对象，都维护一个表来记录它所有的弱引用的指针地址。这样，当一个对象的引用计数为 0 时，系统就通过这张表，找到所有的弱引用指针，继而把它们都置成 nil。</p>
+<p>从这个原理中，我们可以看出，弱引用的使用是有额外的开销的。虽然这个开销很小，但是如果一个地方我们肯定它不需要弱引用的特性，就不应该盲目使用弱引用。</p>
+<p>（3）当实例变量完成工作后，将其置为nil</p>
+<p>​    在合理的位置主动断开环中的一个引用，使得对象得以回收，类似于手动管理，要求对何时释放以及使用内存等非常熟悉。</p>
+<ul>
+<li>底层 Core Foundation 对象，需要自己手工管理它们的引用计数时。</li>
+</ul>
+<p>对于这些底层 Core Foundation对象的引用计数的修改，要相应的使用 <code>CFRetain</code> 和 <code>CFRelease</code> 方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">// 创建一个 CTFontRef 对象</div><div class="line">CTFontRef fontRef = CTFontCreateWithName((CFStringRef)@&quot;ArialMT&quot;, fontSize, NULL);</div><div class="line">// 引用计数加 1</div><div class="line">CFRetain(fontRef);</div><div class="line">// 引用计数减 1</div><div class="line">CFRelease(fontRef);</div></pre></td></tr></table></figure>
+<p>对于 <code>CFRetain</code> 和 <code>CFRelease</code> 两个方法，我们可以直观地认为，这与 Objective-C 对象的 <code>retain</code> 和 <code>release</code> 方法等价。</p>
+<p>所以对于底层 Core Foundation 对象，我们只需要延续以前手工管理引用计数的办法即可。</p>
+<p>除此之外，还有另外一个问题需要解决。在 ARC 下，我们有时需要将一个 Core Foundation 对象转换成一个 Objective-C 对象，这个时候我们需要告诉编译器，转换过程中的引用计数需要做如何的调整。这就引入了<code>bridge</code>相关的关键字，以下是这些关键字的说明：</p>
+<ul>
+<li><code>__bridge</code>: 只做类型转换，不修改相关对象的引用计数，原来的 Core Foundation 对象在不用时，需要调用 CFRelease 方法。</li>
+<li><code>__bridge_retained</code>：类型转换后，将相关对象的引用计数加 1，原来的 Core Foundation 对象在不用时，需要调用 CFRelease 方法。</li>
+<li><code>__bridge_transfer</code>：类型转换后，将该对象的引用计数交给 ARC 管理，Core Foundation 对象在不用时，不再需要调用 CFRelease 方法。</li>
+</ul>
+<p>根据具体情况合理使用上面的 3 种转换关键字，就可以解决 Core Foundation 对象与 Objective-C 对象相对转换的问题了。</p>
+<p>总结</p>
+<p>虽然ARC时代不需要手动管理内存，但是我们仍然要注意循环引用和CoreFoundation对象的引用计数问题。如果对内存管理没有把握可以使用Instrument中的 Leaks 工具来检测循环应用。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS内存管理/" rel="tag"># iOS内存管理</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/27/swift字符串的一些操作/" rel="next" title="swift字符串的一些操作">
+                <i class="fa fa-chevron-left"></i> swift字符串的一些操作
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/23/React组件生命周期/" rel="prev" title="React组件的生命周期">
+                React组件的生命周期 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="yufeng" />
+          <p class="site-author-name" itemprop="name">yufeng</p>
+           
+              <p class="site-description motion-element" itemprop="description">大前端、算法方向</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zhoufusong" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.jianshu.com/users/24f0e7bdca4b/timeline" target="_blank" title="简书">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  简书
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存管理的基础-引用计数"><span class="nav-number">2.</span> <span class="nav-text">内存管理的基础-引用计数</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#MRC"><span class="nav-number">2.1.</span> <span class="nav-text">MRC</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ARC"><span class="nav-number">2.2.</span> <span class="nav-text">ARC</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ARC下仍然需要注意的内存管理问题"><span class="nav-number">3.</span> <span class="nav-text">ARC下仍然需要注意的内存管理问题</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yufeng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
